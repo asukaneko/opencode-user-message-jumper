@@ -321,6 +321,7 @@ const isMessageEventForSession = (sessionID: string, event: { properties: { sess
 
 const Sidebar = (props: { api: Api; sessionID: string; limit: number; openDetailOnClick: boolean }) => {
   const [version, setVersion] = createSignal(0)
+  const [collapsed, setCollapsed] = createSignal(false)
 
   const refresh = () => setVersion((value) => value + 1)
   const disposes = [
@@ -347,6 +348,8 @@ const Sidebar = (props: { api: Api; sessionID: string; limit: number; openDetail
     return getUserMessages(props.api, props.sessionID).slice(-props.limit).reverse()
   })
 
+  const toggleCollapsed = () => setCollapsed((value) => !value)
+
   const select = (item: UserMessageItem) => {
     if (props.openDetailOnClick) {
       openMessage(props.api, item)
@@ -361,44 +364,51 @@ const Sidebar = (props: { api: Api; sessionID: string; limit: number; openDetail
   return (
     <box width="100%" flexDirection="column" paddingTop={1} rowGap={1}>
       <box width="100%" flexDirection="row" justifyContent="space-between">
-        <text fg={theme.textMuted} truncate>
-          User Messages
-        </text>
+        <box flexDirection="row" columnGap={1}>
+          <text fg={theme.textMuted} truncate onMouseUp={onPrimaryClick(toggleCollapsed)}>
+            {collapsed() ? "▸" : "▾"}
+          </text>
+          <text fg={theme.textMuted} truncate>
+            User Messages
+          </text>
+        </box>
         <text fg={theme.textMuted} truncate onMouseUp={onPrimaryClick(() => openPicker(props.api, props.sessionID))}>
           all
         </text>
       </box>
 
-      <Show
-        when={items().length > 0}
-        fallback={
-          <text fg={theme.textMuted} wrapMode="word">
-            No user messages yet.
-          </text>
-        }
-      >
-        <For each={items()}>
-          {(item) => (
-            <box
-              width="100%"
-              flexDirection="column"
-              paddingX={1}
-              paddingY={0}
-              border={false}
-              focusable
-              backgroundColor={theme.backgroundElement}
-              onMouseUp={onPrimaryClick(() => select(item))}
-            >
-              <text fg={theme.text} truncate>
-                #{item.index} {item.preview}
-              </text>
-              <text fg={theme.textMuted} truncate>
-                {formatTime(item.created)}
-                {item.attachments.length > 0 ? `  ${item.attachments.length} attachment(s)` : ""}
-              </text>
-            </box>
-          )}
-        </For>
+      <Show when={!collapsed()}>
+        <Show
+          when={items().length > 0}
+          fallback={
+            <text fg={theme.textMuted} wrapMode="word">
+              No user messages yet.
+            </text>
+          }
+        >
+          <For each={items()}>
+            {(item) => (
+              <box
+                width="100%"
+                flexDirection="column"
+                paddingX={1}
+                paddingY={0}
+                border={false}
+                focusable
+                backgroundColor={theme.backgroundElement}
+                onMouseUp={onPrimaryClick(() => select(item))}
+              >
+                <text fg={theme.text} truncate>
+                  #{item.index} {item.preview}
+                </text>
+                <text fg={theme.textMuted} truncate>
+                  {formatTime(item.created)}
+                  {item.attachments.length > 0 ? `  ${item.attachments.length} attachment(s)` : ""}
+                </text>
+              </box>
+            )}
+          </For>
+        </Show>
       </Show>
     </box>
   )

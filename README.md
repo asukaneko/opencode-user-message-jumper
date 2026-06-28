@@ -12,6 +12,8 @@ text.
 
 - Adds a `User Messages` section to the OpenCode TUI session sidebar.
 - Shows recent user prompts for the active session.
+- Click the `▸` / `▾` indicator to the left of `User Messages` to collapse or
+  expand the entire message list in the sidebar.
 - Provides an `all` picker with searchable user-message titles and right-aligned timestamps.
 - Scrolls the built-in transcript to the selected user message.
 - Adds `/user-messages` and `/umsg` command aliases.
@@ -85,6 +87,8 @@ current session.
 
 - Open an OpenCode session.
 - Use the `User Messages` sidebar section to select a recent prompt.
+- Click the `▸` / `▾` indicator next to `User Messages` to collapse or expand
+  the entire message list.
 - Click `all` to search all user prompts in the current session.
 - Run `/user-messages` or `/umsg` from the command palette to open the picker.
 - Move through the picker to preview each prompt's position in the native transcript.
