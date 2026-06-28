@@ -9,6 +9,7 @@ type Api = Parameters<TuiPlugin>[0]
 
 type Options = {
   limit?: unknown
+  openDetailOnSidebarClick?: unknown
 }
 
 type UserMessageItem = {
@@ -61,6 +62,16 @@ const asLimit = (value: unknown) => {
 
   if (typeof value !== "number" || !Number.isFinite(value)) return 12
   return Math.max(1, Math.min(50, Math.trunc(value)))
+}
+
+const asBoolean = (value: unknown, fallback: boolean) => {
+  if (typeof value === "boolean") return value
+  if (typeof value === "string") {
+    const normalized = value.trim().toLowerCase()
+    if (normalized === "true") return true
+    if (normalized === "false") return false
+  }
+  return fallback
 }
 
 const asString = (value: unknown) => (typeof value === "string" ? value : undefined)
@@ -308,7 +319,7 @@ const openPicker = (api: Api, sessionID = currentSessionID(api)) => {
 const isMessageEventForSession = (sessionID: string, event: { properties: { sessionID?: string } }) =>
   event.properties.sessionID === sessionID
 
-const Sidebar = (props: { api: Api; sessionID: string; limit: number }) => {
+const Sidebar = (props: { api: Api; sessionID: string; limit: number; openDetailOnClick: boolean }) => {
   const [version, setVersion] = createSignal(0)
 
   const refresh = () => setVersion((value) => value + 1)
@@ -337,7 +348,12 @@ const Sidebar = (props: { api: Api; sessionID: string; limit: number }) => {
   })
 
   const select = (item: UserMessageItem) => {
-    openMessage(props.api, item)
+    if (props.openDetailOnClick) {
+      openMessage(props.api, item)
+      return
+    }
+
+    scrollNativeToMessage(props.api, item.id)
   }
 
   const theme = props.api.theme.current
@@ -517,7 +533,9 @@ const MessageDetail = (props: { api: Api; sessionID?: string; messageID?: string
 }
 
 const tui: TuiPlugin = async (api, options) => {
-  const limit = asLimit((options as Options | undefined)?.limit)
+  const pluginOptions = options as Options | undefined
+  const limit = asLimit(pluginOptions?.limit)
+  const openDetailOnSidebarClick = asBoolean(pluginOptions?.openDetailOnSidebarClick, true)
 
   api.route.register([
     {
@@ -538,7 +556,14 @@ const tui: TuiPlugin = async (api, options) => {
     order: 325,
     slots: {
       sidebar_content(_ctx, props) {
-        return <Sidebar api={api} sessionID={props.session_id} limit={limit} />
+        return (
+          <Sidebar
+            api={api}
+            sessionID={props.session_id}
+            limit={limit}
+            openDetailOnClick={openDetailOnSidebarClick}
+          />
+        )
       },
     },
   })

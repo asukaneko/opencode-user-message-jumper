@@ -51,7 +51,8 @@ Then add the local checkout path to `~/.config/opencode/tui.json`:
     [
       "/absolute/path/to/opencode-user-message-jumper",
       {
-        "limit": 12
+        "limit": 12,
+        "openDetailOnSidebarClick": true
       }
     ]
   ]
@@ -65,9 +66,15 @@ Restart the OpenCode TUI after changing the config. Do not start OpenCode with
 
 `limit` controls how many recent user messages are shown in the sidebar.
 
+`openDetailOnSidebarClick` controls whether clicking a user-message item in the
+sidebar also opens the turn detail dialog. When set to `false`, sidebar clicks
+only scroll the native transcript. The `all` picker still opens the detail
+dialog when an item is selected.
+
 ```json
 {
-  "limit": 12
+  "limit": 12,
+  "openDetailOnSidebarClick": true
 }
 ```
 

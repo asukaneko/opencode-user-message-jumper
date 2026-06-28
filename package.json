@@ -23,13 +23,15 @@
     ".": {
       "import": "./src/tui.tsx",
       "config": {
-        "limit": "12"
+        "limit": "12",
+        "openDetailOnSidebarClick": "true"
       }
     },
     "./tui": {
       "import": "./src/tui.tsx",
       "config": {
-        "limit": "12"
+        "limit": "12",
+        "openDetailOnSidebarClick": "true"
       }
     }
   },
