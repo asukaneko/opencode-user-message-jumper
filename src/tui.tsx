@@ -296,8 +296,8 @@ const openPicker = (api: Api, sessionID = currentSessionID(api)) => {
         .map((item) => ({
           title: clip(normalize(item.title), maxDialogTitle),
           value: item,
-          description: `#${item.index}  ${formatTime(item.created)}${item.attachments.length > 0 ? `  ${item.attachments.length} attachment(s)` : ""}`,
-          footer: item.attachments.length > 0 ? item.attachments.join(", ") : undefined,
+          description: `#${item.index}${item.attachments.length > 0 ? `  ${item.attachments.length} attachment(s)` : ""}`,
+          footer: formatTime(item.created),
         }))}
       onMove={(option) => scrollNativeToMessage(api, option.value.id)}
       onSelect={(option) => openMessage(api, option.value)}
