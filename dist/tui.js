@@ -167,10 +167,17 @@ const currentSessionID = api => {
 };
 const openMessage = (api, item) => {
   scrollNativeToMessage(api, item.id);
-  api.route.navigate(detailRoute, {
-    sessionID: item.sessionID,
-    messageID: item.id
-  });
+  api.ui.dialog.setSize("large");
+  api.ui.dialog.replace(() => _$createComponent(MessageDetail, {
+    api: api,
+    get sessionID() {
+      return item.sessionID;
+    },
+    get messageID() {
+      return item.id;
+    },
+    onClose: () => api.ui.dialog.clear()
+  }));
 };
 const openPicker = (api, sessionID = currentSessionID(api)) => {
   if (!sessionID) {
@@ -642,12 +649,11 @@ const tui = async (api, options) => {
     order: 325,
     slots: {
       sidebar_content(_ctx, props) {
-        const slotProps = props;
-        const sessionID = asString(slotProps?.session_id) ?? asString(slotProps?.sessionID);
-        if (!sessionID) return null;
         return _$createComponent(Sidebar, {
           api: api,
-          sessionID: sessionID,
+          get sessionID() {
+            return props.session_id;
+          },
           limit: limit,
           openDetailOnClick: openDetailOnSidebarClick
         });
