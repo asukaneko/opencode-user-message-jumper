@@ -4,21 +4,29 @@
   "workspaces": {
     "": {
       "name": "opencode-user-message-jumper",
-      "dependencies": {
-        "@opentui/core": "^0.4.2",
-        "@opentui/solid": "^0.4.2",
-        "solid-js": "1.9.12",
-      },
       "devDependencies": {
         "@opencode-ai/plugin": "^1.17.11",
         "@opencode-ai/sdk": "^1.17.11",
+        "@opentui/core": "^0.4.2",
+        "@opentui/solid": "^0.4.2",
         "@types/bun": "latest",
+        "solid-js": "1.9.12",
         "typescript": "^5.9.3",
       },
       "peerDependencies": {
         "@opencode-ai/plugin": "^1.17.11",
         "@opencode-ai/sdk": "^1.17.11",
+        "@opentui/core": "^0.4.2",
+        "@opentui/solid": "^0.4.2",
+        "solid-js": "1.9.12",
       },
+      "optionalPeers": [
+        "@opencode-ai/plugin",
+        "@opencode-ai/sdk",
+        "@opentui/core",
+        "@opentui/solid",
+        "solid-js",
+      ],
     },
   },
   "packages": {

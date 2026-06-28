@@ -42,6 +42,7 @@ Clone the repository and install dependencies:
 git clone https://github.com/asukaneko/opencode-user-message-jumper.git
 cd opencode-user-message-jumper
 bun install
+bun run build
 ```
 
 Then add the local checkout path to `~/.config/opencode/tui.json`:
@@ -109,5 +110,6 @@ it in one place.
 
 ```sh
 bun install
+bun run build
 bun run typecheck
 ```

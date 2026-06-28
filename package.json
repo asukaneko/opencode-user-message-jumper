@@ -21,14 +21,14 @@
   ],
   "exports": {
     ".": {
-      "import": "./src/tui.tsx",
+      "import": "./dist/tui.js",
       "config": {
         "limit": "12",
         "openDetailOnSidebarClick": "true"
       }
     },
     "./tui": {
-      "import": "./src/tui.tsx",
+      "import": "./dist/tui.js",
       "config": {
         "limit": "12",
         "openDetailOnSidebarClick": "true"
@@ -36,25 +36,46 @@
     }
   },
   "files": [
+    "dist",
     "src",
     "README.md",
     "package.json"
   ],
   "scripts": {
+    "build": "bun ./scripts/build.mjs",
+    "prepack": "bun run build",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": {
+  "peerDependencies": {
+    "@opencode-ai/plugin": "^1.17.11",
+    "@opencode-ai/sdk": "^1.17.11",
     "@opentui/core": "^0.4.2",
     "@opentui/solid": "^0.4.2",
     "solid-js": "1.9.12"
   },
-  "peerDependencies": {
-    "@opencode-ai/plugin": "^1.17.11",
-    "@opencode-ai/sdk": "^1.17.11"
+  "peerDependenciesMeta": {
+    "@opencode-ai/plugin": {
+      "optional": true
+    },
+    "@opencode-ai/sdk": {
+      "optional": true
+    },
+    "@opentui/core": {
+      "optional": true
+    },
+    "@opentui/solid": {
+      "optional": true
+    },
+    "solid-js": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@opencode-ai/plugin": "^1.17.11",
     "@opencode-ai/sdk": "^1.17.11",
+    "@opentui/core": "^0.4.2",
+    "@opentui/solid": "^0.4.2",
+    "solid-js": "1.9.12",
     "@types/bun": "latest",
     "typescript": "^5.9.3"
   },
