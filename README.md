@@ -3,15 +3,17 @@
 An OpenCode TUI plugin that adds a user-message index to the session sidebar.
 
 The plugin helps you jump back to previous user prompts in the active session.
-Clicking an item opens a detail view for that turn, including the original user
-message, command/tool titles observed during the turn, and the final assistant
-reply text.
+Clicking an item scrolls the native OpenCode transcript to that user message and
+opens a detail dialog for the turn, including the original user message,
+command/tool titles observed during the turn, and the final assistant reply
+text.
 
 ## Features
 
 - Adds a `User Messages` section to the OpenCode TUI session sidebar.
 - Shows recent user prompts for the active session.
-- Provides an `all` picker with searchable user-message titles.
+- Provides an `all` picker with searchable user-message titles and right-aligned timestamps.
+- Scrolls the built-in transcript to the selected user message.
 - Adds `/user-messages` and `/umsg` command aliases.
 - Shows turn details: user message, attachments, command/tool titles, and final reply.
 
@@ -78,16 +80,19 @@ current session.
 - Use the `User Messages` sidebar section to select a recent prompt.
 - Click `all` to search all user prompts in the current session.
 - Run `/user-messages` or `/umsg` from the command palette to open the picker.
+- Move through the picker to preview each prompt's position in the native transcript.
 
 ## Current Limitation
 
 OpenCode `1.17.11` exposes TUI slots, routes, dialogs, and session message
 state, but it does not expose a public `scrollToMessage(messageID)` API for the
-native transcript. For now, selecting an item opens this plugin's turn detail
-view instead of scrolling the built-in transcript to that message.
+native transcript.
 
-The navigation behavior is isolated in the implementation, so a future native
-scroll API can replace it in one place.
+This plugin uses the same internal idea as OpenCode's built-in `/timeline`
+command: it finds the rendered message node in the active session and scrolls
+the surrounding transcript container to it. This is best-effort behavior and is
+kept isolated in the implementation, so a future public scroll API can replace
+it in one place.
 
 ## Development
 
