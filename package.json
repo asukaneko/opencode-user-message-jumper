@@ -1,0 +1,62 @@
+{
+  "name": "opencode-user-message-jumper",
+  "version": "0.1.0",
+  "description": "OpenCode TUI plugin that adds a user-message index to the session sidebar.",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/asukaneko/opencode-user-message-jumper.git"
+  },
+  "bugs": {
+    "url": "https://github.com/asukaneko/opencode-user-message-jumper/issues"
+  },
+  "homepage": "https://github.com/asukaneko/opencode-user-message-jumper#readme",
+  "keywords": [
+    "opencode",
+    "opencode-plugin",
+    "tui"
+  ],
+  "oc-plugin": [
+    "tui"
+  ],
+  "exports": {
+    ".": {
+      "import": "./src/tui.tsx",
+      "config": {
+        "limit": "12"
+      }
+    },
+    "./tui": {
+      "import": "./src/tui.tsx",
+      "config": {
+        "limit": "12"
+      }
+    }
+  },
+  "files": [
+    "src",
+    "README.md",
+    "package.json"
+  ],
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@opentui/core": "^0.4.2",
+    "@opentui/solid": "^0.4.2",
+    "solid-js": "1.9.12"
+  },
+  "peerDependencies": {
+    "@opencode-ai/plugin": "^1.17.11",
+    "@opencode-ai/sdk": "^1.17.11"
+  },
+  "devDependencies": {
+    "@opencode-ai/plugin": "^1.17.11",
+    "@opencode-ai/sdk": "^1.17.11",
+    "@types/bun": "latest",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "opencode": ">=1.17.11"
+  }
+}
