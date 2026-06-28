@@ -33,6 +33,19 @@ type UserTurnDetail = UserMessageItem & {
   assistantIDs: string[]
 }
 
+type RenderableLike = {
+  id?: string
+  y?: number
+  isDestroyed?: boolean
+  getChildren?: () => RenderableLike[]
+  findDescendantById?: (id: string) => RenderableLike | undefined
+  scrollBy?: (delta: number | { x: number; y: number }) => void
+  scrollChildIntoView?: (childId: string) => void
+  content?: {
+    getChildren?: () => RenderableLike[]
+  }
+}
+
 const id = "user-message-jumper"
 const detailRoute = `${id}.message`
 const commandOpen = `${id}.open`
@@ -189,6 +202,54 @@ const getTurnDetail = (api: Api, sessionID: string, messageID: string): UserTurn
   }
 }
 
+const getChildren = (node: RenderableLike) => {
+  try {
+    return node.getChildren?.() ?? []
+  } catch {
+    return []
+  }
+}
+
+const ownsChild = (node: RenderableLike, target: RenderableLike) =>
+  getChildren(node).includes(target) || (node.content?.getChildren?.() ?? []).includes(target)
+
+const findScrollForChild = (root: RenderableLike, target: RenderableLike) => {
+  const stack = [root]
+  const seen = new Set<RenderableLike>()
+
+  while (stack.length > 0) {
+    const node = stack.pop()!
+    if (seen.has(node)) continue
+    seen.add(node)
+
+    if (typeof node.scrollBy === "function" && ownsChild(node, target)) return node
+    stack.push(...getChildren(node))
+  }
+
+  return undefined
+}
+
+const scrollNativeToMessage = (api: Api, messageID: string) => {
+  const root = api.renderer.root as RenderableLike
+  const child = root.findDescendantById?.(messageID)
+  if (!child || child.isDestroyed) return false
+
+  const scroll = findScrollForChild(root, child)
+  if (!scroll || scroll.isDestroyed) return false
+
+  if (typeof child.y === "number" && typeof scroll.y === "number" && typeof scroll.scrollBy === "function") {
+    scroll.scrollBy(child.y - scroll.y - 1)
+    return true
+  }
+
+  if (typeof scroll.scrollChildIntoView === "function" && child.id) {
+    scroll.scrollChildIntoView(child.id)
+    return true
+  }
+
+  return false
+}
+
 const currentSessionID = (api: Api) => {
   const current = api.route.current
   if (current.name !== "session") return undefined
@@ -196,11 +257,11 @@ const currentSessionID = (api: Api) => {
 }
 
 const openMessage = (api: Api, item: UserMessageItem) => {
-  api.ui.dialog.clear()
-  api.route.navigate(detailRoute, {
-    sessionID: item.sessionID,
-    messageID: item.id,
-  })
+  scrollNativeToMessage(api, item.id)
+  api.ui.dialog.setSize("large")
+  api.ui.dialog.replace(() => (
+    <MessageDetail api={api} sessionID={item.sessionID} messageID={item.id} onClose={() => api.ui.dialog.clear()} />
+  ))
 }
 
 const openPicker = (api: Api, sessionID = currentSessionID(api)) => {
@@ -238,6 +299,7 @@ const openPicker = (api: Api, sessionID = currentSessionID(api)) => {
           description: `#${item.index}  ${formatTime(item.created)}${item.attachments.length > 0 ? `  ${item.attachments.length} attachment(s)` : ""}`,
           footer: item.attachments.length > 0 ? item.attachments.join(", ") : undefined,
         }))}
+      onMove={(option) => scrollNativeToMessage(api, option.value.id)}
       onSelect={(option) => openMessage(api, option.value)}
     />
   ))
@@ -326,7 +388,7 @@ const Sidebar = (props: { api: Api; sessionID: string; limit: number }) => {
   )
 }
 
-const MessageDetail = (props: { api: Api; sessionID?: string; messageID?: string }) => {
+const MessageDetail = (props: { api: Api; sessionID?: string; messageID?: string; onClose?: () => void }) => {
   const [version, setVersion] = createSignal(0)
   const refresh = () => setVersion((value) => value + 1)
   const disposes = props.sessionID
@@ -358,6 +420,10 @@ const MessageDetail = (props: { api: Api; sessionID?: string; messageID?: string
 
   const theme = props.api.theme.current
   const back = () => {
+    if (props.onClose) {
+      props.onClose()
+      return
+    }
     if (!props.sessionID) return
     props.api.route.navigate("session", { sessionID: props.sessionID })
   }
