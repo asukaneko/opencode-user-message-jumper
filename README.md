@@ -22,12 +22,12 @@ text.
 - OpenCode `>= 1.17.11`
 - Bun-compatible OpenCode plugin runtime
 
-## Install From GitHub
+## Install From npm
 
-Use OpenCode's plugin installer with the GitHub npm package spec:
+Use OpenCode's plugin installer with the npm package spec:
 
 ```sh
-opencode plugin -g github:asukaneko/opencode-user-message-jumper
+opencode plugin -g npm:opencode-user-message-jumper
 ```
 
 Restart the OpenCode TUI after installing.
