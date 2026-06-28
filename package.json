@@ -42,8 +42,8 @@
     "package.json"
   ],
   "scripts": {
-    "build": "bun ./scripts/build.mjs",
-    "prepack": "bun run build",
+    "build:dist": "bun ./scripts/build.mjs",
+    "prepublishOnly": "bun run build:dist",
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
