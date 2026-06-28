@@ -364,8 +364,8 @@ const Sidebar = (props: { api: Api; sessionID: string; limit: number; openDetail
   return (
     <box width="100%" flexDirection="column" paddingTop={1} rowGap={1}>
       <box width="100%" flexDirection="row" justifyContent="space-between">
-        <box flexDirection="row" columnGap={1}>
-          <text fg={theme.textMuted} truncate onMouseUp={onPrimaryClick(toggleCollapsed)}>
+        <box flexDirection="row" columnGap={1} onMouseUp={onPrimaryClick(toggleCollapsed)}>
+          <text fg={theme.textMuted} truncate>
             {collapsed() ? "▸" : "▾"}
           </text>
           <text fg={theme.textMuted} truncate>
@@ -398,9 +398,14 @@ const Sidebar = (props: { api: Api; sessionID: string; limit: number; openDetail
                 backgroundColor={theme.backgroundElement}
                 onMouseUp={onPrimaryClick(() => select(item))}
               >
-                <text fg={theme.text} truncate>
-                  #{item.index} {item.preview}
-                </text>
+                <box flexDirection="row" columnGap={1}>
+                  <text fg={theme.warning} truncate>
+                    #{item.index}
+                  </text>
+                  <text fg={theme.text} truncate>
+                    {item.preview}
+                  </text>
+                </box>
                 <text fg={theme.textMuted} truncate>
                   {formatTime(item.created)}
                   {item.attachments.length > 0 ? `  ${item.attachments.length} attachment(s)` : ""}
